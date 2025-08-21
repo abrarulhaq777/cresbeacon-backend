@@ -84,7 +84,7 @@ export const getSOS = async (req, res) => {
 export const login = async (req,res) => {
   try {
     const { email, password } = req.body;
-
+    console.log(req.body.email);
     if (!email || !password) {
       return res.status(400).json({ success: false, message: "Email and password are required" });
     }

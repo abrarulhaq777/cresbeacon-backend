@@ -7,7 +7,7 @@ router.post("/register", registerAdmin);
 router.post("/login", login);
 router.post("/sos", sendSOS);
 router.post("/expo-token",expoSaveToken);
-router.post("/get-sos",getSOS);
+router.get("/get-sos",getSOS);
 
 
 export default router;
