@@ -1,6 +1,7 @@
 import fetch from "node-fetch";
 import Admin from "../models/adminSchema.js";
 import sosSchema from "../models/sosSchema.js";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 
 // --- Send push notification helper ---
 async function sendPushNotification(targetToken, latitude, longitude, userId) {
@@ -110,6 +111,20 @@ export const login = async (req,res) => {
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ success: false, message: "Server error" });
+  }
+}
+const genAI = new GoogleGenerativeAI("AIzaSyDw4T7GibXEYHaaH-_iQw3aH4okvYGi7zw");
+
+export const sendMessage = async (req,res) =>{
+   try {
+    const { prompt } = req.body;
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const result = await model.generateContent(prompt);
+
+    res.json({ text: result.response.text() });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong" });
   }
 }
 

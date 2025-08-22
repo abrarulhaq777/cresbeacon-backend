@@ -1,5 +1,5 @@
 import express from "express";
-import { expoSaveToken, getSOS, login, registerAdmin, sendSOS } from "../controller/sosController.js";
+import { expoSaveToken, getSOS, login, registerAdmin, sendMessage, sendSOS } from "../controller/sosController.js";
 
 const router = express.Router();
 
@@ -8,6 +8,8 @@ router.post("/login", login);
 router.post("/sos", sendSOS);
 router.post("/expo-token",expoSaveToken);
 router.get("/get-sos",getSOS);
+router.post("/chat",sendMessage);
+
 
 
 export default router;
