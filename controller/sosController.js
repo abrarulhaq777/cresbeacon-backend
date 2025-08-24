@@ -119,6 +119,18 @@ export const getSOS = async (req, res) => {
   }
 };
 
+export const getComplaint = async (req, res) => {
+  try {
+    // Fetch all SOS entries, optionally sort by newest first
+    const complaintList = await complaintSchema.find().sort({ createdAt: -1 });
+
+    res.json({ success: true, data: complaintList });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error.message });
+  }
+};
+
 export const login = async (req,res) => {
   try {
     const { email, password } = req.body;
