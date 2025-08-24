@@ -9,9 +9,13 @@ const AdminSchema = new mongoose.Schema({
     type:String,
     required : true
   },
-   expoPushToken:{
+  name:{
     type:String,
-    required : false
+    required : true
+  },
+  registerNumber:{
+    type:String,
+    required : true
   },
    role:{
     type:String,

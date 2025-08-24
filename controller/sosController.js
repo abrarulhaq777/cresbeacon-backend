@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import Admin from "../models/adminSchema.js";
 import sosSchema from "../models/sosSchema.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import complaintSchema from "../models/complaintSchema.js";
 
 // --- Send push notification helper ---
 async function sendPushNotification(targetToken, latitude, longitude, userId) {
@@ -29,20 +30,56 @@ async function sendPushNotification(targetToken, latitude, longitude, userId) {
 // --- Controller functions ---
 
 // Register admin push token
-export const registerAdmin = async (req, res) => {
-  try {
-    const { email,password, expoPushToken,name, role } = req.body;
-    let admin = await Admin.findOne({ email });
+// export const registerAdmin = async (req, res) => {
+//   try {
+//     const { email,password ,name, role } = req.body;
+//     let admin = await Admin.findOne({ email });
 
-    if (admin) {
-      admin.expoPushToken = expoPushToken;
-      await admin.save();
-    } else {
-      admin = new Admin({ email,password, expoPushToken,role });
-      await admin.save();
-    }
-    console.log(admin)
-    res.json({ success: true, message: "Admin registered",userId: admin._id,role: admin.role});
+//     if (admin) {
+//       admin.expoPushToken = expoPushToken;
+//       await admin.save();
+//     } else {
+//       admin = new Admin({ email,password, expoPushToken,role });
+//       await admin.save();
+//     }
+//     console.log(admin)
+//     res.json({ success: true, message: "Admin registered",userId: admin._id,role: admin.role});
+//   } catch (error) {
+//     res.status(500).json({ success: false, error: error.message });
+//   }
+// };
+export const registerUser = async (req, res) => {
+  try {
+      const { name, email, password,registerNumber } = req.body;
+
+      // Check if user exists
+      const existingUser = await Admin.findOne({ email });
+      if (existingUser) return res.status(400).json({ message: "User already exists" });
+
+
+
+      // Create user
+      const newUser = new Admin({ name, email, password: password, registerNumber, role: "user" });
+      await newUser.save();
+
+      res.status(201).json({ message: "User registered successfully" });
+  } catch (error) {
+      res.status(500).json({ message: "Server error", error: error.message });
+  }
+};
+
+export const saveComplaint = async (req, res) => {
+  try {
+    const { name,registerNumber,subject,detailedDescription, location } = req.body;
+   // 1. Save the SOS in the database
+   const newComplaint = await complaintSchema.create({
+    name: name,
+    registerNumber: registerNumber,
+    subject: subject,
+    detailedDescription: detailedDescription,
+    location: location,
+  });
+    res.json({ success: true, message: "Complaint Registered", complaint: newComplaint });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
